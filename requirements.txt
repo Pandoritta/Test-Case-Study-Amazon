@@ -1,0 +1,5 @@
+selenium
+behave
+python-dotenv
+allure_behave==2.13.5
+
