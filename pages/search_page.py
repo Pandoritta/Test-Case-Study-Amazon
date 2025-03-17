@@ -22,18 +22,34 @@ class SearchPage(AmazonHomePage):
 
     CART = (By.XPATH, '//a[@id="nav-cart"]')
 
-    #Sorts the price from low to high
     def sort_product(self):
+        """Sort the products by price from low to high, uses the base function clickable
+        """
         self.clickable(*self.PRICE_FILTER)
         self.clickable(*self.LOW_TO_HIGH)
         return None
-
-    #Returns the search results after applying all filters
+    
     def get_sorted_results(self):
+        """Get the search results after applying all filters
+
+        Returns:
+            results: The search results
+        """
         results = self.find_elements(*self.SEARCH_RESULTS)
         return results
     
     def find_available_products(self, product, results):
+        """Find the available products that match the search criteria: 
+         - title matches the product that was passed as argument
+         - the price is displayed
+         - the add to cart button is displayed
+            
+        Args: 
+            product: The product to search for
+            results: The search results
+        Returns:
+            valid_results: The valid results that match the search criteria
+        """
 
         valid_results = []
 
@@ -69,6 +85,14 @@ class SearchPage(AmazonHomePage):
         return valid_results
         
     def add_cheapest_to_cart(self, valid_results):
+        """Add the cheapest product to the cart, 
+        and adds the cheapest price to a csv file - total_prods.csv(created: environment.py)
+
+        Args:
+            valid_results: The valid results that match the search criteria
+        Returns:
+            cheapest_price: The cheapest price
+        """
         valid_results.sort(key=lambda x: x[0])
         cheapest_price, result = valid_results[0]   
 
@@ -80,6 +104,12 @@ class SearchPage(AmazonHomePage):
         return cheapest_price
     
     def total_items(self):
+        """Get the total price of all products added to the cart
+        Opens the csv file total_prods.csv(created: environment.py) and sums all the prices
+        
+        Returns:
+            total: The total price of all products added to the cart"""
+        
         total = 0
         with open('features/total_prods.csv', 'r') as f:
             reader = csv.reader(f)
@@ -90,6 +120,9 @@ class SearchPage(AmazonHomePage):
         return total
 
     def go_to_cart(self):
+        """Go to the cart page
+        Uses the base function clickable
+        """
         self.clickable(*self.CART)
         return None
 
