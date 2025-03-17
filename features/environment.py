@@ -8,7 +8,16 @@ from selenium.webdriver.chrome.service import Service
 load_dotenv()
 
 def before_all(context):
-    
+    """Setup the environment for the tests
+    1. Set the browser  to be used
+    2. Set the driver path based on the OS (Windows, Linux, MacOS)    
+    3. Creates a csv that will hold the cheapest price for each product
+
+    Args:   
+        context: Behave context object
+    Returns:
+        None
+    """
     os_type = platform.system().lower()
     base_path = os.path.join(os.path.dirname(__file__), '..', 'drivers')
     
@@ -36,6 +45,15 @@ def before_all(context):
             pass
 
 def after_all(context):
+    """Tear down the environment after the tests
+    1. Close the browser
+    2. Delete the csv file
+
+    Args:
+        context: Behave context object
+    Returns:
+        None
+    """
     context.browser.quit()
     if os.path.exists('features/total_prods.csv'):
         os.remove('features/total_prods.csv')

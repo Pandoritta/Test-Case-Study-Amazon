@@ -2,6 +2,8 @@ from behave import given, step, when, then
 from pages.cart import CartPage
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+import unittest
+import logging
 
 @given("I am on the Amazon as a new user")
 def step_impl(context):
@@ -32,6 +34,9 @@ def step_impl(context, product):
 def step_impl(context):
     total = context.amazon.total_items()
     context.total = total
+    if not context.amazon.check_cart_has_items():
+        raise unittest.SkipTest("No added items, as products not available in the country")
+        
 
 @when("I go to cart")
 def step_impl(context):
@@ -48,8 +53,7 @@ def step_impl(context):
     context.amazon.proceed_to_checkout()
 
 @then("I should be redirected to the Registration page")
-def step_impl(context):
-    expected_title = "Amazon Sign-In"
+def step_impl(context, expected_title = 'Amazon Sign-In'):
     WebDriverWait(context.browser, 10).until(EC.title_is(expected_title))
     title = context.browser.title
     assert title == expected_title, f"Expected: {expected_title}, Actual: {title}"
