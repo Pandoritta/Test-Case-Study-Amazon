@@ -7,7 +7,8 @@ This project contains automated tests for Amazon using Selenium WebDriver with P
 - Python 3.8 or higher
 - Chrome browser
 - Git
-(VPN - country US if you want all tests to pass)
+- VPN - country US if you want all tests to pass
+
 
 ## Setup
 
