@@ -22,9 +22,9 @@ def before_all(context):
     base_path = os.path.join(os.path.dirname(__file__), '..', 'drivers')
     
     if 'windows' in os_type:
-        driver_path = os.path.join(base_path, 'windows', 'chromedriver-win32')
+        driver_path = os.path.join(base_path, 'windows', 'chromedriver-win32', 'chromedriver.exe')
     elif 'linux' in os_type:
-        driver_path = os.path.join(base_path, 'linux', 'chromedriver-linux64')
+        driver_path = os.path.join(base_path, 'linux', 'chromedriver-linux64', 'chromedriver')
     elif 'darwin' in os_type:  
         driver_path = os.path.join(base_path, 'macos', 'chromedriver-mac-arm64', 'chromedriver')
     else:

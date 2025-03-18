@@ -8,6 +8,7 @@ This project contains automated tests for Amazon using Selenium WebDriver with P
 - Chrome browser
 - Git
 - VPN - country US if you want all tests to pass
+- Latest version of pip3
 
 
 ## Setup
@@ -20,7 +21,7 @@ cd Test-Case-Study-Amazon
 
 2. Create and activate a virtual environment:
 ```bash
-python -m venv venv
+python3 -m venv venv
 source venv/bin/activate  # For Unix/MacOS
 # or
 .\venv\Scripts\activate  # For Windows
@@ -36,6 +37,16 @@ pip install -r requirements.txt
 cd drivers
 chmod +x download_drivers.sh
 ./download_drivers.sh
+```
+
+5. Install Allure to be able to serve reports
+
+For linux: [Link](https://allurereport.org/docs/install-for-linux/)
+
+```bash
+brew install allure #For Macos
+
+scoop install allure #For Windows
 ```
 
 This script will download the appropriate ChromeDriver version for your operating system:
