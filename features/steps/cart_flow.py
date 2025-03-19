@@ -3,7 +3,7 @@ from pages.cart import CartPage
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import unittest
-import logging
+
 
 @given("I am on the Amazon as a new user")
 def step_impl(context):
@@ -17,6 +17,7 @@ def step_impl(context, product):
 @step("I sort the search results by price in ascending order")
 def step_impl(context):
     context.amazon.sort_product()
+
 
 
 @step("I check if there are available {product} in my country")

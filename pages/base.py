@@ -2,6 +2,7 @@ from dotenv import load_dotenv
 import os
 import logging
 from selenium.webdriver.common.by import By
+import time
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import TimeoutException
@@ -11,7 +12,7 @@ logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 class BasePage:
-    def __init__(self, driver, timeout=10):
+    def __init__(self, driver, timeout=20):
         """"Initialize the BasePage, 
             Adds default wait time for the webdriver
 
@@ -23,7 +24,11 @@ class BasePage:
         self.timeout = timeout
         self.wait = WebDriverWait(self.driver, self.timeout)
         logger.info("Initialized BasePage with timeout: %s seconds", timeout)
-        
+
+    def wait_DOM_loaded(self):
+        time.sleep(5)
+        self.wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
+
     def open_homepage(self):
         """Open the homepage of the application"""
         try:
@@ -64,7 +69,7 @@ class BasePage:
         """
         try:
             logger.info("Finding elements: %s = %s", by, value)
-            elements = self.wait.until(EC.presence_of_all_elements_located((by, value)))
+            elements = self.wait.until(EC.visibility_of_all_elements_located((by, value)))
             logger.info("Found %d elements", len(elements))
             return elements
         except TimeoutException:

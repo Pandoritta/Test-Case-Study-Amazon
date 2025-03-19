@@ -1,8 +1,13 @@
 from pages.amazon_home import AmazonHomePage
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import StaleElementReferenceException
 import logging
 import csv
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
 class SearchPage(AmazonHomePage):
@@ -11,11 +16,8 @@ class SearchPage(AmazonHomePage):
     PRICE_FILTER = (By.XPATH, '//*[@id="search"]/span/div/h1/div/div[4]/div/div/form/span/span/span/span')
     LOW_TO_HIGH = (By.XPATH, '//a[@id="s-result-sort-select_1"]')
 
-    DEPARTMENT = (By.XPATH, '//*[@id="departments"]/ul/span[1]/span[1]/li[1]')
-    BRAND_SNICKERS = (By.XPATH, '//*[@id="p_123/256198"]/span/a/span')
-    BRAND_SKITTLES = (By.XPATH, '//*[@id="p_123/265191"]/span/a/span')
+    SEARCH_RESULTS = (By.XPATH, '*//div[@role="listitem"]')
 
-    SEARCH_RESULTS = (By.XPATH, '//div[@role="listitem"]')
     PRODUCT_TITLE = (By.XPATH, './/div/h2[1]/span')
     PRODUCT_PRICE = (By.XPATH, './/*[@class="a-price"]/span[1]')
     ADD_TO_CART = (By.XPATH, './/*[@name="submit.addToCart"]')
@@ -35,10 +37,11 @@ class SearchPage(AmazonHomePage):
         Returns:
             results: The search results
         """
-        results = self.find_elements(*self.SEARCH_RESULTS)
-        return results
-    
+        self.wait_DOM_loaded()
+        return self.find_elements( *self.SEARCH_RESULTS)
+
     def find_available_products(self, product, results):
+
         """Find the available products that match the search criteria: 
          - title matches the product that was passed as argument
          - the price is displayed
@@ -50,10 +53,11 @@ class SearchPage(AmazonHomePage):
         Returns:
             valid_results: The valid results that match the search criteria
         """
-
+        
         valid_results = []
 
         for result in results:
+
             try:
                 title_element = result.find_element(*self.PRODUCT_TITLE)
                 title_text = title_element.get_attribute("textContent").lower()
@@ -64,6 +68,7 @@ class SearchPage(AmazonHomePage):
             if product.lower() == title_text:
                 try:
                     price = result.find_element(*self.PRODUCT_PRICE)
+            
                     price = price.get_attribute("textContent")
                     price = float(price.replace("$", ""))
                 except Exception as err:
@@ -72,12 +77,16 @@ class SearchPage(AmazonHomePage):
 
                 try:
                     add_to_cart_button = result.find_element(*self.ADD_TO_CART)
+
                     add_to_cart_button
                 except Exception as err:
                     logging.debug(f"Skipping result due to: {str(err)}")
                     continue
 
                 valid_results.append((price, result))
+            
+
+        logger.info("Found %s valid results", len(valid_results))
 
         if not valid_results:
             return False
@@ -125,9 +134,4 @@ class SearchPage(AmazonHomePage):
         """
         self.clickable(*self.CART)
         return None
-
-    
-    
-
-
     
