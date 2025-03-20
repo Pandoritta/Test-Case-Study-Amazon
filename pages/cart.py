@@ -31,6 +31,7 @@ class CartPage(SearchPage):
             
         Returns:    
             float: Subtotal of the cart"""
+        self.wait_DOM_loaded()
         try:
             subtotal = self.find_element(*self.SUBTOTAL)
             subtotal = subtotal.get_attribute("textContent")

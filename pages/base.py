@@ -29,6 +29,34 @@ class BasePage:
         time.sleep(5)
         self.wait.until(lambda d: d.execute_script("return document.readyState") == "complete")
 
+    def scroll_to_top(self, by, value):
+        """Scroll to the top of the page and wait for an element to be present
+        
+        Args:
+            by: The locator type
+            value: The locator value 
+            timeout: Optional custom timeout (uses default if not specified)
+        Returns:
+            element: The element found after scrolling
+        Raises:
+            TimeoutException: If the element is not found after scrolling
+        """
+        try:
+            logger.info("Scrolling to top of page")
+            self.driver.execute_script("window.scrollTo(0, 0);")
+            
+            wait = WebDriverWait(self.driver, 10)
+            logger.info("Waiting for element after scroll: %s = %s", by, value)
+            element = wait.until(EC.presence_of_element_located((by, value)))
+            
+            return element
+        except TimeoutException:
+            logger.error("Element not found after scrolling: %s = %s", by, value)
+            raise
+        except Exception as e:
+            logger.error("Failed to scroll and find element: %s", str(e))
+            raise
+
     def open_homepage(self):
         """Open the homepage of the application"""
         try:
