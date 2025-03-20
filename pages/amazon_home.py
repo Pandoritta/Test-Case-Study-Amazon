@@ -16,6 +16,7 @@ class AmazonHomePage(BasePage):
         Returns:
             product: The product searched for
         """
+        self.open_homepage()
         self.send_keys(*self.SEARCH_BOX, product)
         self.clickable(*self.SEARCH_BUTTON)
         return product

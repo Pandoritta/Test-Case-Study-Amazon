@@ -37,6 +37,7 @@ class SearchPage(AmazonHomePage):
         Returns:
             results: The search results
         """
+        self.sort_product()
         self.wait_DOM_loaded()
         return self.find_elements( *self.SEARCH_RESULTS)
 
@@ -105,7 +106,9 @@ class SearchPage(AmazonHomePage):
         valid_results.sort(key=lambda x: x[0])
         cheapest_price, result = valid_results[0]   
 
-        add_to_cart_button = result.find_element(*self.ADD_TO_CART)
+        wait = WebDriverWait(result, 10)
+        add_to_cart_button = wait.until(
+            EC.element_to_be_clickable(self.ADD_TO_CART))
         add_to_cart_button.click()     
         with open('features/total_prods.csv', 'a') as f:
             writer = csv.writer(f)
@@ -126,12 +129,14 @@ class SearchPage(AmazonHomePage):
             for row in reader:
                 price = float(row[0])
                 total += price
-        return total
+        return round(total, 2)
 
     def go_to_cart(self):
         """Go to the cart page
         Uses the base function clickable
         """
+        
+        self.scroll_to_top(*self.CART)
         self.clickable(*self.CART)
         return None
     
