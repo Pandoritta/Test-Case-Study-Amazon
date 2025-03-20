@@ -135,7 +135,7 @@ class SearchPage(AmazonHomePage):
         """Go to the cart page
         Uses the base function clickable
         """
-        
+        self.wait_DOM_loaded()
         self.scroll_to_top(*self.CART)
         self.clickable(*self.CART)
         return None
